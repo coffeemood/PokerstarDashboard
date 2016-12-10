@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<style>
+		.boxed {
+		border: 2px solid pink; }
+		</style>
+		<script>
+
+		function generalz(url) {
+		var xdash = new XMLHttpRequest();
+		xdash.onreadystatechange = function () {
+		if (xdash.status == 200 && xdash.readyState == 4) {
+			procXml(xdash);
+				}
+			}
+		xdash.open("GET", url, false);
+		xdash.send("")
+		}
+
+		function procXml(xdash) {
+		var i
+		var xdashx = xdash.responseXML;
+		var tab = "<table><th>Start Date </th><th>Tournament</th><th>Buyin </th> \
+	<th>Chips </th><th>Prizepool </th><th>Description </th></table>"
+			
+		var x = getElementsByTagName('tournament'); 
+		for (i = 0; i<x.length; i++) { 
+			tab += "<tr><td>" + 
+			x[i].getElementsByTagName("start_date")[0].childNodes[0].nodeValue + 
+			"</td><td>" +
+			x[i].getElementsByTagName("name")[0].childNodes[0].nodeValue + 
+			"</td><td>" +
+			x[i].getElementsByTagName("buy_in_fee")[0].childNodes[0].nodeValue + 
+			"</td><td>" +
+			x[i].getElementsByTagName("chips")[0].childNodes[0].nodeValue + 
+			"</td><td>" +
+			x[i].getAttribute('prize') + 
+			"</td><td>" +
+			x[i].getElementsByTagName("description")[0].childNodes[0].nodeValue + 
+		}
+		
+		
+		}
+
+
+		</script>
+	</head>
+	<body onload = "generalz(export.xml)">
+		<div class = 'boxed' id = 'dashboard'> Tournament Dashboard </div>
+	</body>
+</html>

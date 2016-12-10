@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pandas as pd 
 import pytz
+import csv
 from datetime import datetime
 from dateutil import parser
 from xml.dom.minidom import parse
@@ -59,13 +60,20 @@ for num, tour in enumerate(tours):
 		time = parser.parse(getText(startd.childNodes))
 		now = datetime.now(pytz.utc) # Getting UTC awareness --> subtract for difference in time 
 		status = time - now # Get the time difference
-		start_in = status.total_seconds() / 60 
+		start_in = int(status.total_seconds() / 60)
 		if '$' in getText(bi.childNodes).encode('utf-8') and (getText(game.childNodes).encode('utf-8') == "Hold'em"):
 			totalbiz = splitbi(getText(bi.childNodes))
 			dic.append({'Start':start_in,'Name':getText(name.childNodes).encode('utf-8'),'Buyin': totalbiz,'Chips':getText(chips.childNodes),'Description':getText(description.childNodes).encode('utf-8'),'TZ':time,})
 
 df = pd.DataFrame(dic)
-print df[df.Name.str.contains('Gtd')].head(50).to_csv(path_or_buf ='testpoker.csv')
+df.index.name = "Tournament"
+print df[df.Name.str.contains('Gtd')].head(50).to_csv(path_or_buf ='testpoker.csv', sep = ';')
+
+
+with open('testpoker.csv', 'rb') as outfile:
+		reader = csv.reader(outfile, delimiter=';', quotechar = '|')
+		for row in reader:
+			print (' | '.join(row) + '\n')
 
 
 
